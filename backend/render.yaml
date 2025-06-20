@@ -1,13 +1,16 @@
 services:
   - type: web
-    name: django-app
-    env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn your_project_name.wsgi:application"
+    name: backend
+    env: docker
+    plan: free
+    region: singapore
+    dockerfilePath: Dockerfile
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: your_project_name.settings
       - key: SECRET_KEY
-        value: your-secret-key
+        value: django-insecure-1c0%moo=4#arobz3ded0^k%njil&lg5_lhp7i^7mvvbkry8)rs
+      - key: DJANGO_SETTINGS_MODULE
+        value: backend.settings
       - key: DEBUG
-        value: false
+        value: False
+      - key: ALLOWED_HOSTS
+        value: *
