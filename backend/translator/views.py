@@ -71,20 +71,37 @@ class PredictView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        video = request.FILES.get('video')
-        if not video:
-            return Response({'error': 'No video uploaded'}, status=400)
+        try:
+            video = request.FILES.get('video')
+            if not video:
+                return Response({'error': 'No video uploaded'}, status=400)
 
-        file_path = os.path.join(settings.MEDIA_ROOT, video.name)
-        with open(file_path, 'wb+') as f:
-            for chunk in video.chunks():
-                f.write(chunk)
+            # Save file to MEDIA_ROOT
+            file_path = os.path.join(settings.MEDIA_ROOT, video.name)
+            with open(file_path, 'wb+') as f:
+                for chunk in video.chunks():
+                    f.write(chunk)
 
-        sequence = process_video(file_path)
-        model = load_model()
-        prediction = model.predict(sequence)
-        predicted_class = actions[np.argmax(prediction)]
+            print(f"📁 File saved to: {file_path}")
 
-        os.remove(file_path)
+            # Process the video into keypoints
+            sequence = process_video(file_path)
+            print(f"📏 Sequence shape: {sequence.shape}")
 
-        return Response({'prediction': predicted_class})
+            # Load and predict using the model
+            model = load_model()
+            print("🧠 Predicting...")
+            prediction = model.predict(sequence)
+            print(f"✅ Prediction result: {prediction}")
+
+            predicted_class = actions[np.argmax(prediction)]
+            print(f"🔤 Predicted class: {predicted_class}")
+
+            # Clean up uploaded file
+            os.remove(file_path)
+
+            return Response({'prediction': predicted_class})
+
+        except Exception as e:
+            print(f"❌ Internal Server Error: {str(e)}")
+            return Response({'error': str(e)}, status=500)
