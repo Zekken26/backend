@@ -14,6 +14,7 @@ model = None  # Lazy-loaded later
 def download_model():
     import gdown
     model_path = settings.MODEL_PATH
+    print("📦 Model file exists:", os.path.exists(model_path), model_path)
     file_id = '1jF-UFZfHnpH-EASf3rgQ0x8XpLZayNkW'
     download_url = f'https://drive.google.com/uc?id={file_id}'
 
@@ -44,6 +45,9 @@ def process_video(file_path):
 
     sequence = []
     cap = cv2.VideoCapture(file_path)
+    if not cap.isOpened():
+        raise ValueError(f"Could not open video file: {file_path}")
+
     step = max(1, int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) // 30)
 
     with mp.solutions.holistic.Holistic(static_image_mode=False) as holistic:
