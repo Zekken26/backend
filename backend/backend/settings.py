@@ -137,3 +137,7 @@ REST_FRAMEWORK = {
 }
 
 PORT = os.environ.get('PORT', 8000)
+
+# Allow up to 100MB uploads (adjust as needed)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 MB
+
