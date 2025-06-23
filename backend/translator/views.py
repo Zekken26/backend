@@ -1,6 +1,6 @@
 import os
 import numpy as np
-
+import traceback  # Make sure this is imported at the top
 from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -101,7 +101,9 @@ class PredictView(APIView):
             os.remove(file_path)
 
             return Response({'prediction': predicted_class})
-
+            
         except Exception as e:
-            print(f"❌ Internal Server Error: {str(e)}")
+            print("❌ Internal Server Error:")
+            traceback.print_exc()  # <-- This prints full traceback to the logs
             return Response({'error': str(e)}, status=500)
+
