@@ -86,7 +86,7 @@ class PredictView(APIView):
             os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
             
             file_path = os.path.join(settings.MEDIA_ROOT, video.name)
-             print(f"📁 Step 2: Saving to {file_path}")
+            print(f"📁 Step 2: Saving to {file_path}")
             with open(file_path, 'wb+') as f:
                 for chunk in video.chunks():
                     f.write(chunk)
