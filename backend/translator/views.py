@@ -96,12 +96,20 @@ class PredictView(APIView):
             print("🤖 Step 4: Loading model...")
             model = load_model()
     
-            print("📈 Step 5: Predicting...")
-            prediction = model.predict(sequence)
-            print(f"✅ Prediction result: {prediction}")
+            # print("📈 Step 5: Predicting...")
+            # prediction = model.predict(sequence)
+            # print(f"✅ Prediction result: {prediction}")
     
-            predicted_class = actions[np.argmax(prediction)]
+            # predicted_class = actions[np.argmax(prediction)]
+            # print(f"🔤 Predicted class: {predicted_class}")
+            # Replace this part in your view temporarily
+            
+            print("📈 Step 5: Predicting...")
+            # prediction = model.predict(sequence)
+            # predicted_class = actions[np.argmax(prediction)]
+            predicted_class = "hello (dummy)"
             print(f"🔤 Predicted class: {predicted_class}")
+
     
             os.remove(file_path)
             return Response({'prediction': predicted_class})
