@@ -74,42 +74,41 @@ def process_video(file_path):
 class PredictView(APIView):
     parser_classes = [MultiPartParser]
     def post(self, request):
-        try:
-            print("📥 Step 1: Receiving file...")
-            video = request.FILES.get('video')
-            if not video:
-                return Response({'error': 'No video uploaded'}, status=400)
-                
-            video = request.FILES.get('video')
-            if not video:
-                return Response({'error': 'No video uploaded'}, status=400)
-            os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
-            
-            file_path = os.path.join(settings.MEDIA_ROOT, video.name)
-            print(f"📁 Step 2: Saving to {file_path}")
-            with open(file_path, 'wb+') as f:
-                for chunk in video.chunks():
-                    f.write(chunk)
+    print("⚙️ PredictView POST called.")
+    try:
+        print("📥 Step 1: Receiving file...")
+        video = request.FILES.get('video')
+        if not video:
+            print("❌ No video received.")
+            return Response({'error': 'No video uploaded'}, status=400)
 
-            print("🧪 Step 3: Processing video...")
-            sequence = process_video(file_path)
+        os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+        file_path = os.path.join(settings.MEDIA_ROOT, video.name)
 
-            print("🤖 Step 4: Loading model...")
-            model = load_model()
+        print(f"📁 Step 2: Saving to {file_path}")
+        with open(file_path, 'wb+') as f:
+            for chunk in video.chunks():
+                f.write(chunk)
 
-            print("📈 Step 5: Predicting...")
-            prediction = model.predict(sequence)
-            print(f"✅ Prediction result: {prediction}")
+        print("🧪 Step 3: Processing video...")
+        sequence = process_video(file_path)
 
-            predicted_class = actions[np.argmax(prediction)]
-            print(f"🔤 Predicted class: {predicted_class}")
+        print("🤖 Step 4: Loading model...")
+        model = load_model()
 
-            os.remove(file_path)
-            return Response({'prediction': predicted_class})
+        print("📈 Step 5: Predicting...")
+        prediction = model.predict(sequence)
+        print(f"✅ Prediction result: {prediction}")
 
-        except Exception as e:
-            print("❌ Internal Server Error:")
-            traceback.print_exc()
-            return Response({'error': str(e)}, status=500)
+        predicted_class = actions[np.argmax(prediction)]
+        print(f"🔤 Predicted class: {predicted_class}")
 
+        os.remove(file_path)
+        return Response({'prediction': predicted_class})
+
+    except Exception as e:
+        print("❌ Internal Server Error:")
+        import traceback
+        traceback.print_exc()
+        return Response({'error': str(e)}, status=500)
 
