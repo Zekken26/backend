@@ -10,6 +10,11 @@ from rest_framework.parsers import MultiPartParser
 actions = ['hello', 'ikinagagalak kong makilala ka', 'magkita tayo bukas']
 model = None  # Lazy-loaded later
 
+from rest_framework.decorators import api_view
+
+@api_view(['GET'])
+def health_check(request):
+    return Response({'status': 'ok'})
 
 def download_model():
     import gdown
